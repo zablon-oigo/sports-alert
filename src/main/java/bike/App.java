@@ -19,7 +19,11 @@ public class App {
 
             System.out.println("Bike data published to Kafka.");
 
-        } finally {
+        }catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+        finally {
             producer.close();
         }
     }
