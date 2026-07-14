@@ -32,6 +32,10 @@ public class Producer {
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 StringSerializer.class.getName());
 
+        props.put(
+                ProducerConfig.ACKS_CONFIG,
+                "all");
+
         producer = new KafkaProducer<>(props);
     }
 
@@ -47,18 +51,24 @@ public class Producer {
             if (exception == null) {
 
                 System.out.println(
-                        "Sent to topic=" + metadata.topic() +
-                        " partition=" + metadata.partition() +
-                        " offset=" + metadata.offset());
+                        "Message sent successfully");
+                System.out.println(
+                        "Topic: " + metadata.topic());
+                System.out.println(
+                        "Partition: " + metadata.partition());
+                System.out.println(
+                        "Offset: " + metadata.offset());
 
             } else {
 
+                System.err.println("Failed to send message.");
                 exception.printStackTrace();
 
             }
 
         });
 
+        producer.flush();
     }
 
     public void close() {
