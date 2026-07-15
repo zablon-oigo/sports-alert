@@ -9,43 +9,39 @@ import java.time.Duration;
 
 public class HttpClientService {
 
-    private static final String BIKE_API =
-            "https://tfl.gov.uk/tfl/syndication/feeds/cycle-hire/livecyclehireupdates.xml";
+    private static final String URL =
+            "https://api.tfl.gov.uk/BikePoint";
 
     private final HttpClient client;
 
     public HttpClientService() {
 
-        this.client = HttpClient.newBuilder()
+        client = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();
     }
 
     public String fetchBikeData() {
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BIKE_API))
-                .header("Accept", "application/xml")
-                .GET()
-                .build();
-
         try {
 
-            HttpResponse<String> response =
-                    client.send(request, HttpResponse.BodyHandlers.ofString());
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(URL))
+                    .GET()
+                    .build();
 
-            if (response.statusCode() != 200) {
-                throw new RuntimeException(
-                        "HTTP Error: " + response.statusCode());
-            }
+            HttpResponse<String> response =
+                    client.send(request,
+                            HttpResponse.BodyHandlers.ofString());
 
             return response.body();
 
         } catch (IOException | InterruptedException e) {
 
-            Thread.currentThread().interrupt();
             throw new RuntimeException(e);
 
         }
+
     }
+
 }
